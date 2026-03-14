@@ -1,0 +1,76 @@
+# robots.txt for Abetworks Tools
+# https://tools.abetworks.in/robots.txt
+
+User-agent: *
+Allow: /
+
+# Allow all crawlers
+Allow: /category/
+Allow: /tool/
+Allow: /about/
+Allow: /services/
+Allow: /search/
+
+# Disallow admin/private areas (if any)
+Disallow: /admin/
+Disallow: /private/
+Disallow: /api/internal/
+
+# Sitemap location
+Sitemap: https://tools.abetworks.in/sitemap.xml
+
+# Crawl delay (optional, polite crawling)
+Crawl-delay: 1
+
+# Google specific
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 0.5
+
+# Bing specific
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 1
+
+# Common bots
+User-agent: Slurp
+Allow: /
+
+User-agent: DuckDuckBot
+Allow: /
+
+User-agent: Baiduspider
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: facebot
+Allow: /
+
+User-agent: ia_archiver
+Allow: /
+
+# Rate limiting for aggressive bots
+User-agent: AhrefsBot
+Crawl-delay: 5
+Allow: /
+
+User-agent: SemrushBot
+Crawl-delay: 5
+Allow: /
+
+User-agent: MJ12bot
+Crawl-delay: 5
+Allow: /
+
+# Block bad bots
+User-agent: *
+Disallow: /wp-admin/
+Disallow: /wp-includes/
+Disallow: /xmlrpc.php
+
+# Empty robots for common CMS paths (we're static)
+Disallow: /cgi-bin/
+Disallow: /bin/
+Disallow: /etc/

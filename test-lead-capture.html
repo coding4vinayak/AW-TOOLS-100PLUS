@@ -1,0 +1,205 @@
+abetworks-tools\LOGOAW.png
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Google Sheets Integration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .log {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>🧪 Google Sheets Lead Capture Test</h1>
+
+    <p>This page tests if your Google Apps Script URL is working correctly.</p>
+
+    <div style="margin: 20px 0;">
+        <label for="scriptUrl"><strong>Google Script URL:</strong></label>
+        <input type="text" id="scriptUrl"
+            value="https://script.google.com/macros/s/AKfycbx1D8CGIlCPu332HrHvZ9OdeLN_2RplnDKzPctFbEwjEZpPusFuxsYxyVLi5TimuCcM/exec"
+            style="width: 100%; padding: 8px; margin-top: 5px;" />
+    </div>
+
+    <button onclick="testLeadSubmission()">🧪 Test Lead Submission</button>
+    <button onclick="testEmailAlert()" style="margin-left: 10px;">📧 Test Email Alert</button>
+
+    <div id="result"></div>
+    <div id="log" class="log" style="display: none;"></div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.style.display = 'block';
+            logDiv.textContent += message + '\n';
+            console.log(message);
+        }
+
+        async function testLeadSubmission() {
+            const scriptUrl = document.getElementById('scriptUrl').value;
+            const resultDiv = document.getElementById('result');
+
+            resultDiv.innerHTML = '';
+            document.getElementById('log').textContent = '';
+
+            log('🚀 Starting test...');
+            log(`📡 URL: ${scriptUrl}`);
+
+            const testData = {
+                name: 'Test User',
+                email: 'test@example.com',
+                businessName: 'Test Business',
+                serviceInterest: 'consulting',
+                toolUsed: 'Test Tool',
+                timestamp: new Date().toISOString()
+            };
+
+            log('📦 Test data: ' + JSON.stringify(testData, null, 2));
+
+            try {
+                log('⏳ Sending request...');
+
+                const response = await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                log('✅ Request sent! Status: ' + response.status);
+                log('⚠️ Note: With no-cors mode, we cannot read the actual response');
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✅ Request Sent Successfully!</strong><br><br>
+                        <strong>What happens next:</strong><br>
+                        1. Check your Google Sheet "Abetworks Leads" - should have new row<br>
+                        2. Check email (baoxing100+tools@gmail.com) for alert<br>
+                        3. Check spam folder if not in inbox<br><br>
+                        <strong>Response status:</strong> ${response.status}
+                    </div>
+                `;
+
+                log('✅ Test complete! Check your Google Sheet and email.');
+
+            } catch (error) {
+                log('❌ Error: ' + error.message);
+                log('❌ Stack: ' + error.stack);
+
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Request Failed!</strong><br><br>
+                        <strong>Error:</strong> ${error.message}<br><br>
+                        <strong>Common fixes:</strong><br>
+                        1. Make sure URL is correct (ends with /exec)<br>
+                        2. Check Deploy settings: Who has access = Anyone<br>
+                        3. Check Apps Script execution logs for errors
+                    </div>
+                `;
+            }
+        }
+
+        async function testEmailAlert() {
+            const scriptUrl = document.getElementById('scriptUrl').value;
+            const resultDiv = document.getElementById('result');
+
+            log('📧 Testing email alert...');
+
+            const testData = {
+                name: 'Email Test',
+                email: 'emailtest@example.com',
+                businessName: 'Email Test Business',
+                serviceInterest: 'email-test',
+                toolUsed: 'Email Test Tool',
+                timestamp: new Date().toISOString()
+            };
+
+            try {
+                await fetch(scriptUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(testData)
+                });
+
+                resultDiv.innerHTML = `
+                    <div class="success">
+                        <strong>✅ Email Test Sent!</strong><br><br>
+                        Check inbox: <strong>baoxing100+tools@gmail.com</strong><br>
+                        Subject: 🎯 New Lead from Abetworks Tools - Email Test<br><br>
+                        <strong>Didn't receive email?</strong><br>
+                        1. Check spam folder<br>
+                        2. In Apps Script, run testEmailAlert() manually<br>
+                        3. Check Apps Script execution logs
+                    </div>
+                `;
+
+                log('✅ Email test complete!');
+
+            } catch (error) {
+                log('❌ Email test failed: ' + error.message);
+                resultDiv.innerHTML = `
+                    <div class="error">
+                        <strong>❌ Email Test Failed!</strong><br>
+                        Error: ${error.message}
+                    </div>
+                `;
+            }
+        }
+    </script>
+</body>
+
+</html>
